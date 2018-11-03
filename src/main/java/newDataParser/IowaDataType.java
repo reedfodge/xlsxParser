@@ -1,21 +1,30 @@
 package newDataParser;
 
 public class IowaDataType {
-	public String monthEnding;
-	public String month;
-	public int year;
-	public String category;
-	public String supersector;
-	public double employment;
+	private String monthEnding;
+	private String month;
+	private String year;
+	private String category;
+	private String supersector;
+	private double employment;
 	
 
-	public IowaDataType(String monthEnding, String month, int year, String category, String supersector, double employment) {
+	public IowaDataType(String monthEnding, String month, String year, String category, String supersector, double employment) {
 		this.monthEnding = monthEnding;
 		this.month = month;
 		this.year = year;
 		this.category = category;
 		this.supersector = supersector;
 		this.employment = employment;
+	}
+	
+	public IowaDataType() {
+		this.monthEnding = "";
+		this.month = "";
+		this.year = "";
+		this.category = "";
+		this.supersector = "";
+		this.employment = 0;
 	}
 	
 	public String getMonthEnding() {
@@ -48,14 +57,15 @@ public class IowaDataType {
 	public void setEmployment(double employment) {
 		this.employment = employment;
 	}
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
-	public void setYear(int year) {
+	public void setYear(String year) {
 		this.year = year;
 	}
 	
 	public String toString(IowaDataType i) {
-		return i.getMonthEnding() + " " + i.getMonth() + " " + i.getCategory() + " " + i.getSupersector() + i.getEmployment() + i.getYear();
+		String s = i.getMonthEnding() + " " + i.getMonth() + " " + i.getCategory() + " " + i.getSupersector() + i.getEmployment() + i.getYear();
+		return s;
 	}
 }

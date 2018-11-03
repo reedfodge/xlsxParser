@@ -34,10 +34,12 @@ public class IowaReader {
 	    double employmentAverageGovernment = getEmploymentAverage(govern);
 	    double employmentAverageGoods = getEmploymentAverage(goods);
 	    
-	    ArrayList<IowaDataType> totalArr = getCellInfo(sheet);
-	    for(int i = 0; i < totalArr.size(); i++) {
-	    	System.out.println(totalArr.get(i).toString());
-	    }
+	    ArrayList<IowaDataType> arr = getData(sheet);
+	    System.out.println(arr.get(1).getYear());
+//	    ArrayList<IowaDataType> totalArr = getCellInfo(sheet);
+//	    for(int i = 0; i < totalArr.size(); i++) {
+//	    	System.out.println(totalArr.get(i).toString());
+//	    }
 	}
 	
 	public void getIowaStats(XSSFSheet sheet) {
@@ -66,62 +68,46 @@ public class IowaReader {
 		}
 	}
 	
-	public static void printSheet(XSSFSheet sheet) {
+	public static ArrayList<IowaDataType> getData(XSSFSheet sheet) {
+		ArrayList<IowaDataType> arr = new ArrayList<IowaDataType>();
 		for(Row row : sheet) {
-			for(Cell cell : row) {
-				String cellText = cell.toString();
-				System.out.print(cellText + " ");
-			}
-			System.out.println("");
-		}
-	}
-	
-	
-	public static ArrayList<IowaDataType> getCellInfo(XSSFSheet sheet) {
-		ArrayList<IowaDataType> list = new ArrayList<IowaDataType>();
-		for(Row row : sheet) {
-			IowaDataType test = new IowaDataType(" ", " ", 0, " ", " ", 0);
+			IowaDataType test = new IowaDataType();
 			for(Cell cell : row) {
 				String cellText = cell.toString();
 				boolean hasPeriod = false;
+				boolean hasSlash = false;
 				for(int i = 1; i < cellText.length(); i++) {
-					if(cellText.substring(i-1, i).equals("/")) {
-						test.setMonthEnding(cellText);
-					}
-					else if(cellText.substring(i-1, i).equals(".")) {
-						test.setEmployment(Double.parseDouble(cellText));
+					if(cellText.substring(i-1, i).equalsIgnoreCase(".")) {
 						hasPeriod = true;
 					}
+					else if(cellText.substring(i-1, i).equalsIgnoreCase(("-"))) {
+						hasSlash = true;
+					}
 				}
-				if(cellText.length() == 3 && hasPeriod == false) {
+				if(hasPeriod && cellText.length() <= 4) {
+					test.setEmployment(Double.valueOf(cellText));
+				}
+				else if(hasSlash && cellText.length() < 12) {
+					test.setMonthEnding(cellText);
+				}
+				else if(cellText.length() == 3 && hasPeriod == false) {
 					test.setMonth(cellText);
 				}
-//				else if(cellText.length() == 4 && hasPeriod == false) {
-//					test.setYear(Integer.getInteger(cellText));
-//				}
-				else if(cellText.equalsIgnoreCase("Service-Providing")) { test.setCategory(cellText); }
-				else if(cellText.equalsIgnoreCase("Government")) { test.setCategory(cellText); }
-				else if(cellText.equalsIgnoreCase("Goods-Producing")) { test.setCategory(cellText); }
-				else if(cellText.equalsIgnoreCase("Construction")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Education and Health Services")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Federal Government")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Financial Activity")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Information")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Leisure and Hospitality")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Local Government")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Other Services")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Manufacturing")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Mining and Logging")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Professional Business and Services")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Retail Trade")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("State Government")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Transportation and Utilities")) { test.setSupersector(cellText); }
-				else if(cellText.equalsIgnoreCase("Wholesale Trade")) { test.setSupersector(cellText); }
+				else if(cellText.length() == 6 && hasPeriod == true) {
+					test.setYear(cellText);
+				}
+				else if(cellText.equalsIgnoreCase("Service-Providing") || cellText.equalsIgnoreCase("Government") || cellText.equalsIgnoreCase("Goods-Producing")) {
+					test.setCategory(cellText);
+				}
+				else {
+					test.setSupersector(cellText);
+				}
 			}
-			list.add(test);
+			arr.add(test);
 		}
-		return list;
+		return arr;
 	}
+
 	
 	public static ArrayList<IowaDataType> service = new ArrayList<IowaDataType>();
 	public static ArrayList<IowaDataType> govern = new ArrayList<IowaDataType>();
