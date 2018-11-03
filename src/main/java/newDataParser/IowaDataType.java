@@ -64,8 +64,8 @@ public class IowaDataType {
 		this.year = year;
 	}
 	
-	public String toString(IowaDataType i) {
-		String s = i.getMonthEnding() + " " + i.getMonth() + " " + i.getCategory() + " " + i.getSupersector() + i.getEmployment() + i.getYear();
+	public String toString() {
+		String s = this.getMonthEnding() + " " + this.getMonth() + " " + this.getYear() + " " + this.getCategory() + " " + this.getSupersector() + " " + this.getEmployment();
 		return s;
 	}
 }

@@ -35,7 +35,12 @@ public class IowaReader {
 	    double employmentAverageGoods = getEmploymentAverage(goods);
 	    
 	    ArrayList<IowaDataType> arr = getData(sheet);
-	    System.out.println(arr.get(1).getYear());
+	    System.out.println(arr.get(1).toString());
+	    sort(sheet);
+	    System.out.println(service.size());
+	    System.out.println(govern.size());
+	    System.out.println(goods.size());
+	    System.out.println(service.size() + govern.size() + goods.size());
 //	    ArrayList<IowaDataType> totalArr = getCellInfo(sheet);
 //	    for(int i = 0; i < totalArr.size(); i++) {
 //	    	System.out.println(totalArr.get(i).toString());
@@ -114,7 +119,7 @@ public class IowaReader {
 	public static ArrayList<IowaDataType> goods = new ArrayList<IowaDataType>();
 	
 	public static void sort(XSSFSheet sheet) {
-		ArrayList<IowaDataType> unsorted = new ArrayList<IowaDataType>();
+		ArrayList<IowaDataType> unsorted = getData(sheet);
 		for(int i = 0; i < unsorted.size(); i++) {
 			if(unsorted.get(i).getCategory().equals("Service-Providing")) {
 				service.add(unsorted.get(i));
@@ -122,7 +127,7 @@ public class IowaReader {
 			else if(unsorted.get(i).getCategory().equals("Government")) {
 				govern.add(unsorted.get(i));
 			}
-			else if(unsorted.get(i).getCategory().equals("Goods-Production")) {
+			else if(unsorted.get(i).getCategory().equals("Goods-Producing")) {
 				goods.add(unsorted.get(i));
 			}
 		}
