@@ -33,7 +33,14 @@ public class IowaReader {
 	   getIowaStats(sheet);
 	   fullList = getData(sheet);
 	   sort(sheet);
+	   sortByYear(govern);
+	   //sortByMonth(govern);
+	   for(int i = 0; i < govern.size(); i++) {
+		   System.out.println(govern.get(i).toString());
+	   }
 	}
+	
+	public static String[] months = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
 	
 	public static void printEverything() {
 		for(int i = 0; i < fullList.size(); i++) {
@@ -181,4 +188,50 @@ public class IowaReader {
 			System.out.println(service.get(i).toString());
 		}
  	}
+	
+	public static void sortByYear(ArrayList<IowaDataType> arr) {
+		double low = 1000000;
+		double high = 0;
+		for(int i = 0; i < arr.size(); i++) {
+			if(Double.valueOf(arr.get(i).getYear()) < low) {
+				low = Double.valueOf(arr.get(i).getYear());
+			}
+			else if(Double.valueOf(arr.get(i).getYear()) > high) {
+				high = Double.valueOf(arr.get(i).getYear());
+			}
+		}
+		for(int i = 0; i < arr.size(); i++) {
+			for(int j = 0; j < arr.size(); j++) {
+				IowaDataType temp = arr.get(i);
+				if(Double.valueOf(arr.get(i).getYear()) < Double.valueOf(arr.get(j).getYear())) {
+					arr.set(i, arr.get(j));
+					arr.set(j, temp);
+				}
+			}
+		}
+	}
+	
+	public static void sortByMonth(ArrayList<IowaDataType> arr) {
+		ArrayList<IDTIndex> arrIndex = new ArrayList<IDTIndex>();
+		for(int i = 0; i < arr.size(); i++) {
+			for(int j = 0; j < months.length; j++) {
+				if(arr.get(i).getMonth().equalsIgnoreCase(months[j])) {
+					int ind = j + 1;
+					arrIndex.add(new IDTIndex(arr.get(i), ind));
+					//System.out.println(arr.get(i).getMonth() + " index is " + ind);
+				}
+			}
+		}
+		
+		for(int i = 0; i < arr.size(); i++) {
+			for(int j = 0; j < arr.size(); j++) {
+				IowaDataType temp = arr.get(i);
+				if(arrIndex.get(i).getIndex() < arrIndex.get(j).getIndex() && arr.get(i).getYear().equals(arr.get(j).getYear())) {
+					arr.set(i, arr.get(j));
+					arr.set(j, temp);
+					
+				}
+			}
+		}
+	}
 }
