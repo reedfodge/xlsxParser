@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Date;
+import java.util.Scanner;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,11 +14,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class IowaReader {
-	public int serviceProviding = 0;
-	public int government = 0;
-	public int goodsProducing = 0;
+	public static int serviceProviding = 0;
+	public static int government = 0;
+	public static int goodsProducing = 0;
 	
-	public int construction, education, fedGov, finActivity, info, 
+	public static int construction, education, fedGov, finActivity, info, 
 		leisureHosp, localGov, manufacturing, miningLogging, other, 
 	 	proBusinessServices, retailTrade, stateGov, transportUtil, 
 		wholesaleTrade = 0; 
@@ -30,24 +30,24 @@ public class IowaReader {
 	    XSSFWorkbook workbook = new XSSFWorkbook(fis);
 	    XSSFSheet sheet = workbook.getSheetAt(0);
 	    
-	    double employmentAverageService = getEmploymentAverage(service);
-	    double employmentAverageGovernment = getEmploymentAverage(govern);
-	    double employmentAverageGoods = getEmploymentAverage(goods);
-	    
-	    ArrayList<IowaDataType> arr = getData(sheet);
-	    System.out.println(arr.get(1).toString());
-	    sort(sheet);
-	    System.out.println(service.size());
-	    System.out.println(govern.size());
-	    System.out.println(goods.size());
-	    System.out.println(service.size() + govern.size() + goods.size());
-//	    ArrayList<IowaDataType> totalArr = getCellInfo(sheet);
-//	    for(int i = 0; i < totalArr.size(); i++) {
-//	    	System.out.println(totalArr.get(i).toString());
-//	    }
+	   getIowaStats(sheet);
+	   fullList = getData(sheet);
+	   sort(sheet);
 	}
 	
-	public void getIowaStats(XSSFSheet sheet) {
+	public static void printEverything() {
+		for(int i = 0; i < fullList.size(); i++) {
+			System.out.println(fullList.get(i).toString());
+		}
+	}
+	
+	public static void printList(ArrayList<IowaDataType> arr) {
+		for(int i = 0; i < arr.size(); i++) {
+			System.out.println(arr.get(i).toString());
+		}
+	}
+	
+	public static void getIowaStats(XSSFSheet sheet) {
 		for(Row row : sheet) {
 			for(Cell cell : row) {
 				String cellText = cell.toString();
@@ -72,6 +72,9 @@ public class IowaReader {
 			}
 		}
 	}
+	
+	
+	public static ArrayList<IowaDataType> fullList;
 	
 	public static ArrayList<IowaDataType> getData(XSSFSheet sheet) {
 		ArrayList<IowaDataType> arr = new ArrayList<IowaDataType>();
@@ -131,6 +134,36 @@ public class IowaReader {
 				goods.add(unsorted.get(i));
 			}
 		}
+	}
+	
+	public static ArrayList<String> getDifferences(XSSFSheet sheet) {
+		ArrayList<IowaDataType> arr = service;
+		ArrayList<String> diff = new ArrayList<String>();
+		for(int i = 1; i < arr.size(); i++) {
+			double d = arr.get(i).getEmployment() - arr.get(i-1).getEmployment();
+			d = Math.abs(d);
+			String s = Double.toString(d);
+			diff.add(s);
+		}
+		return diff;
+	}
+	
+	public static void toDate(IowaDataType i) {
+		String s = i.getMonthEnding();
+		System.out.println(s);
+		int day = Integer.getInteger(s.substring(0, 2));
+		String month = s.substring(3, 5);
+		int mon = 0;
+		String[] months = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
+		for(int j = 0; j < months.length; j++) {
+			if(month.equals(months[j])) {
+				mon = j+1;
+			}
+		}
+		int year = Integer.getInteger(s.substring(7, 10));
+	//	System.out.println(day);
+	//	System.out.println(month);
+	//	System.out.println(year);
 	}
 	
 	public static double getEmploymentAverage(ArrayList<IowaDataType> list) {
