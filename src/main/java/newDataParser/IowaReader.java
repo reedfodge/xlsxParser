@@ -34,9 +34,9 @@ public class IowaReader {
 	   fullList = getData(sheet);
 	   sort(sheet);
 	   sortByYear(govern);
-	   //sortByMonth(govern);
-	   for(int i = 0; i < govern.size(); i++) {
-		   System.out.println(govern.get(i).toString());
+	   ArrayList<String> test = getDifferences(govern);
+	   for(int i = 0; i < test.size(); i++) {
+		   System.out.println(test.get(i));
 	   }
 	}
 	
@@ -143,16 +143,18 @@ public class IowaReader {
 		}
 	}
 	
-	public static ArrayList<String> getDifferences(XSSFSheet sheet) {
-		ArrayList<IowaDataType> arr = service;
-		ArrayList<String> diff = new ArrayList<String>();
+	public static ArrayList<String> getDifferences(ArrayList<IowaDataType> arr) {
+		ArrayList<Double> list = new ArrayList<Double>();
+		ArrayList<String> fin = new ArrayList<String>();
 		for(int i = 1; i < arr.size(); i++) {
-			double d = arr.get(i).getEmployment() - arr.get(i-1).getEmployment();
-			d = Math.abs(d);
-			String s = Double.toString(d);
-			diff.add(s);
+			list.add(arr.get(i).getEmployment() - arr.get(i-1).getEmployment());
 		}
-		return diff;
+		for(int i = 0; i < list.size(); i++) {
+			String s = Double.toString(list.get(i));
+			s += "% ";
+			fin.add(s);
+		}
+		return fin;
 	}
 	
 	public static void toDate(IowaDataType i) {
@@ -211,7 +213,9 @@ public class IowaReader {
 		}
 	}
 	
-	public static void sortByMonth(ArrayList<IowaDataType> arr) {
+	
+	//Work in Progress
+	public static ArrayList<IowaDataType> sortByMonth(ArrayList<IowaDataType> arr) {
 		ArrayList<IDTIndex> arrIndex = new ArrayList<IDTIndex>();
 		for(int i = 0; i < arr.size(); i++) {
 			for(int j = 0; j < months.length; j++) {
@@ -225,13 +229,23 @@ public class IowaReader {
 		
 		for(int i = 0; i < arr.size(); i++) {
 			for(int j = 0; j < arr.size(); j++) {
-				IowaDataType temp = arr.get(i);
-				if(arrIndex.get(i).getIndex() < arrIndex.get(j).getIndex() && arr.get(i).getYear().equals(arr.get(j).getYear())) {
-					arr.set(i, arr.get(j));
-					arr.set(j, temp);
-					
+				IDTIndex temp = arrIndex.get(i);
+				if(arrIndex.get(i).getIndex() < arrIndex.get(j).getIndex()) {
+					if(arrIndex.get(i).getIowa().getMonth().equals(arrIndex.get(j).getIowa().getYear())) {
+						arrIndex.set(i, arrIndex.get(j));
+						arrIndex.set(j, temp);
+					}
 				}
 			}
 		}
+		
+		ArrayList<IowaDataType> ar = new ArrayList<IowaDataType>();
+		
+		for(int i = 0; i < arrIndex.size(); i++) {
+			ar.add(arrIndex.get(i).getIowa());
+		}
+		
+		return ar;
+		
 	}
 }

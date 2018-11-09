@@ -16,5 +16,13 @@ public class IDTIndex {
 	public double getIndex() {
 		return index;
 	}
+	
+	public void setIDT(IowaDataType i) {
+		iowa = i;
+	}
+	
+	public IowaDataType getIowa() {
+		return iowa;
+	}
 }
 
